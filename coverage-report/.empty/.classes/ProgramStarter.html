@@ -1,0 +1,138 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ProgramStarter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">&lt;empty package name&gt;</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ProgramStarter (&lt;empty package name&gt;)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProgramStarter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 31)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;import enums.FileFormat;
+<i>2</i>&nbsp;import input.IOHandler;
+<i>3</i>&nbsp;import java.io.BufferedReader;
+<i>4</i>&nbsp;import java.io.File;
+<i>5</i>&nbsp;import java.io.IOException;
+<i>6</i>&nbsp;import java.io.InputStreamReader;
+<i>7</i>&nbsp;
+<b class="nc"><i>8</i>&nbsp;public class ProgramStarter {</b>
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;    ////format of input:
+<i>11</i>&nbsp;    // /Users/sasa/Desktop/ex0.md /Users/sasa/Desktop/CT/erg MD --mcdc
+<i>12</i>&nbsp;    public static void main(String[] args) throws IOException {
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;        String input;
+<i>15</i>&nbsp;        String output;
+<i>16</i>&nbsp;        FileFormat fileFormat;
+<b class="nc"><i>17</i>&nbsp;        boolean mcdc = false;</b>
+<b class="nc"><i>18</i>&nbsp;        boolean mmbue = false;</b>
+<i>19</i>&nbsp;        while (true) {
+<b class="nc"><i>20</i>&nbsp;            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));</b>
+<b class="nc"><i>21</i>&nbsp;            System.out.print(&quot;Bitte geben Sie das Kommando ein. Das Format ist: Path_von_input Path_von_Output Format --mcdc --mmbue \n&quot;);</b>
+<i>22</i>&nbsp;
+<b class="nc"><i>23</i>&nbsp;            String inputPath = br.readLine();</b>
+<b class="nc"><i>24</i>&nbsp;            System.out.println(&quot;MIIIIII: &quot;+inputPath);</b>
+<b class="nc"><i>25</i>&nbsp;            String[] parameters = inputPath.split(&quot; &quot;);</b>
+<b class="nc"><i>26</i>&nbsp;            input = parameters[0];</b>
+<b class="nc"><i>27</i>&nbsp;            output = parameters[1];</b>
+<b class="nc"><i>28</i>&nbsp;            String fileFormatString = parameters[2]; //MD oder CVS</b>
+<i>29</i>&nbsp;
+<b class="nc"><i>30</i>&nbsp;            if (fileFormatString.equals(&quot;MD&quot;)) {</b>
+<b class="nc"><i>31</i>&nbsp;                fileFormat = FileFormat.MD;</b>
+<b class="nc"><i>32</i>&nbsp;            } else if (fileFormatString.equals(&quot;CSV&quot;)) {</b>
+<b class="nc"><i>33</i>&nbsp;                fileFormat = FileFormat.CSV;</b>
+<b class="nc"><i>34</i>&nbsp;            } else throw new IllegalArgumentException(&quot;File Format invalid&quot;);</b>
+<i>35</i>&nbsp;
+<b class="nc"><i>36</i>&nbsp;            if (parameters.length == 4) {</b>
+<b class="nc"><i>37</i>&nbsp;                if (parameters[3].equals(&quot;--mcdc&quot;)) {</b>
+<b class="nc"><i>38</i>&nbsp;                    mcdc = true;</b>
+<b class="nc"><i>39</i>&nbsp;                    mmbue = false;</b>
+<b class="nc"><i>40</i>&nbsp;                } else if (parameters[3].equals(&quot;--mmbue&quot;)) {</b>
+<b class="nc"><i>41</i>&nbsp;                    mcdc = false;</b>
+<b class="nc"><i>42</i>&nbsp;                    mmbue = true;</b>
+<b class="nc"><i>43</i>&nbsp;                } else throw new IllegalArgumentException(&quot;Command is invalid&quot;);</b>
+<b class="nc"><i>44</i>&nbsp;            } else if (parameters.length == 5) {</b>
+<b class="nc"><i>45</i>&nbsp;                if (parameters[3].equals(&quot;--mcdc&quot;) &amp;&amp; (parameters[4].equals(&quot;--mmbue&quot;)) || (parameters[3].equals(&quot;--mmbue&quot;) &amp;&amp; (parameters[4].equals(&quot;--mcdc&quot;)))) {</b>
+<b class="nc"><i>46</i>&nbsp;                    mcdc = true;</b>
+<b class="nc"><i>47</i>&nbsp;                    mmbue = true;</b>
+<b class="nc"><i>48</i>&nbsp;                } else throw new IllegalArgumentException(&quot;Commands are invalid&quot;);</b>
+<i>49</i>&nbsp;            }
+<b class="nc"><i>50</i>&nbsp;            IOHandler.checkInputPath(new File(input), output, fileFormat, mcdc, mmbue);</b>
+<b class="nc"><i>51</i>&nbsp;        }</b>
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;}
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-06-06 08:48</div>
+</div>
+</body>
+</html>

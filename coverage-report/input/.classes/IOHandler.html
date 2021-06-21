@@ -1,0 +1,190 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: IOHandler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">input</a> ]
+</div>
+
+<h1>Coverage Summary for Class: IOHandler (input)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IOHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (28/ 35)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package input;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import algorithmen.MCDC;
+<i>4</i>&nbsp;import algorithmen.MMBUE;
+<i>5</i>&nbsp;import algorithmen.TruthTable;
+<i>6</i>&nbsp;import enums.AlgorithmToExecute;
+<i>7</i>&nbsp;import enums.FileFormat;
+<i>8</i>&nbsp;import output.OutputWriter;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;import java.io.*;
+<i>11</i>&nbsp;import java.nio.file.NotDirectoryException;
+<i>12</i>&nbsp;import java.util.*;
+<i>13</i>&nbsp;import java.util.stream.Collectors;
+<i>14</i>&nbsp;
+<b class="nc"><i>15</i>&nbsp;public class IOHandler {</b>
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;	//Pruefen unser input Path und bearbeiten weiter, abhaengig davon, ob das Directory oder File ist
+<i>18</i>&nbsp;		// /Users/venancekonan/Documents/STUDIUM/HAW/Semester_5/Kurse/CT/Praktikum/P5/testOrdner /Users/venancekonan/Documents/STUDIUM/HAW/Semester_5/Kurse/CT/Praktikum/P5/output MD --mcdc
+<i>19</i>&nbsp;		// /Users/venancekonan/Documents/STUDIUM/HAW/Semester_5/Kurse/CT/Praktikum/P5/leer /Users/venancekonan/Documents/STUDIUM/HAW/Semester_5/Kurse/CT/Praktikum/P5/output MD --mcdc
+<i>20</i>&nbsp;	public static void checkInputPath(File input, String outputPath, FileFormat format, boolean mcdc, boolean mmbue) throws NotDirectoryException {
+<i>21</i>&nbsp;		//if output file does not exist - make a new one
+<b class="fc"><i>22</i>&nbsp;		if (!new File(outputPath).exists()) {</b>
+<b class="fc"><i>23</i>&nbsp;			new File(outputPath).mkdirs();</b>
+<i>24</i>&nbsp;		}
+<i>25</i>&nbsp;		//if output is not of a type directory
+<b class="fc"><i>26</i>&nbsp;		if (!new File(outputPath).isDirectory()) {</b>
+<b class="fc"><i>27</i>&nbsp;			System.out.println(&quot;Bitte geben Sie den Ordner als Output Path\n&quot; + System.lineSeparator());</b>
+<b class="fc"><i>28</i>&nbsp;			throw new NotDirectoryException(&quot;Your output path must be a directory!&quot;);</b>
+<i>29</i>&nbsp;		}
+<i>30</i>&nbsp;
+<b class="fc"><i>31</i>&nbsp;		if (input.isDirectory()) {</b>
+<b class="fc"><i>32</i>&nbsp;			List&lt;File&gt; allFiles = getFiles(input, format); //collecting all files that we need to handle</b>
+<b class="fc"><i>33</i>&nbsp;			allFiles.forEach(file -&gt; executeForFile(file, outputPath, format, mcdc, mmbue));</b>
+<i>34</i>&nbsp;			//for each file we work separetly
+<b class="fc"><i>35</i>&nbsp;		} else {</b>
+<i>36</i>&nbsp;			//in case input is a single file
+<b class="fc"><i>37</i>&nbsp;			if (input.getPath().substring(input.getPath().lastIndexOf(&quot;.&quot;) + 1).equals(format.getFileEnding())) {</b>
+<b class="fc"><i>38</i>&nbsp;				executeForFile(input, outputPath, format, mcdc, mmbue);</b>
+<i>39</i>&nbsp;			} else {
+<b class="fc"><i>40</i>&nbsp;				System.out.println(&quot; Der Format von der Datei ist nicht korrekt&quot;);</b>
+<b class="fc"><i>41</i>&nbsp;				throw new IllegalArgumentException(&quot;The input file format is not correct!&quot;);</b>
+<i>42</i>&nbsp;			}
+<i>43</i>&nbsp;		}
+<b class="fc"><i>44</i>&nbsp;	}</b>
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;	//sammeln alle Files von dem Directory in eine Liste
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;	/*private static List&lt;File&gt; getFiles(File dir, FileFormat format) {
+<i>49</i>&nbsp;		System.out.println(&quot;OUIIIII: &quot;+dir.listFiles().length);
+<i>50</i>&nbsp;		if(Objects.requireNonNull(dir.listFiles()).length == 0){
+<i>51</i>&nbsp;			throw new NullPointerException(&quot;Ordner ist leer&quot;);
+<i>52</i>&nbsp;		}
+<i>53</i>&nbsp;		File[] listWithFiles = dir.listFiles();
+<i>54</i>&nbsp;		List&lt;File&gt; resultList = new ArrayList&lt;&gt;();
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;		for (File f:listWithFiles) {
+<i>57</i>&nbsp;			if(f.isDirectory()){
+<i>58</i>&nbsp;				//listWithFiles.remove(f);
+<i>59</i>&nbsp;				System.out.println(&quot;Ordner wurde gefunden - wird nicht bearbeitet&quot;);
+<i>60</i>&nbsp;			}
+<i>61</i>&nbsp;			if(!f.getPath().substring(f.getPath().lastIndexOf(&quot;.&quot;) + 1).equals(format.getFileEnding())){
+<i>62</i>&nbsp;				//	listWithFiles.remove(f);
+<i>63</i>&nbsp;				System.out.println(&quot;Format von der Datei ist inkorrekt - wird nicht bearbeitet&quot;);
+<i>64</i>&nbsp;			}
+<i>65</i>&nbsp;			resultList.add(f);
+<i>66</i>&nbsp;		}
+<i>67</i>&nbsp;		return resultList;
+<i>68</i>&nbsp;	}*/
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;	private static List&lt;File&gt; getFiles(File dir, FileFormat format) {
+<b class="fc"><i>71</i>&nbsp;		return Arrays.stream(dir.listFiles()).</b>
+<b class="fc"><i>72</i>&nbsp;				filter(file -&gt; !file.isDirectory()).</b>
+<b class="fc"><i>73</i>&nbsp;				filter(file -&gt; file.getPath().substring(file.getPath().lastIndexOf(&quot;.&quot;) + 1).equals(format.getFileEnding())).</b>
+<b class="fc"><i>74</i>&nbsp;				collect(Collectors.toList());</b>
+<i>75</i>&nbsp;	}
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;	//Bearbeiten den File und generieren die Test Cases
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;	private static void executeForFile(File file, String outputPath, FileFormat format, boolean mcdc, boolean mmbue) {
+<i>81</i>&nbsp;		try {
+<i>82</i>&nbsp;			//falls  file von Typ MD dann-&gt;&gt;&gt;&gt;
+<b class="fc"><i>83</i>&nbsp;			if (format == FileFormat.MD) {</b>
+<b class="fc"><i>84</i>&nbsp;				TruthTable table = InputScanner.readTableFromFile(file);</b>
+<b class="fc"><i>85</i>&nbsp;				if (mcdc) {</b>
+<i>86</i>&nbsp;
+<b class="fc"><i>87</i>&nbsp;					String outputFileName = file.getName().replace(&quot;.&quot;, String.format(&quot;-%s-output.&quot;, AlgorithmToExecute.MCDC.getName()));</b>
+<b class="fc"><i>88</i>&nbsp;					String generatedName = outputPath + File.separator + outputFileName;</b>
+<i>89</i>&nbsp;
+<b class="fc"><i>90</i>&nbsp;					OutputWriter.writeToFile(generatedName, MCDC.runMcdc(table), table.getHeader(), table.getAnzahlVonBedingugen());</b>
+<i>91</i>&nbsp;				}
+<b class="fc"><i>92</i>&nbsp;				if (mmbue) {</b>
+<b class="nc"><i>93</i>&nbsp;					String outputFileName = file.getName().replace(&quot;.&quot;, String.format(&quot;-%s-output.&quot;, AlgorithmToExecute.MMBUE.getName()));</b>
+<b class="nc"><i>94</i>&nbsp;					String generatedName = outputPath + File.separator + outputFileName;</b>
+<i>95</i>&nbsp;
+<b class="nc"><i>96</i>&nbsp;					OutputWriter.writeToFile(generatedName, MMBUE.runMmbue(table), table.getHeader(), table.getAnzahlVonBedingugen());</b>
+<i>97</i>&nbsp;				}
+<b class="fc"><i>98</i>&nbsp;			} else {</b>
+<b class="nc"><i>99</i>&nbsp;				throw new IllegalArgumentException(&quot;Dieser Format wurde noch nicht implementiert&quot;);</b>
+<i>100</i>&nbsp;			}
+<b class="nc"><i>101</i>&nbsp;		} catch (IOException e) {</b>
+<b class="nc"><i>102</i>&nbsp;			System.out.println(e + &quot;Test Case Generierung war nicht erfolgreich&quot;);</b>
+<b class="fc"><i>103</i>&nbsp;		}</b>
+<b class="fc"><i>104</i>&nbsp;	}</b>
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;}
+<i>107</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-06-06 08:48</div>
+</div>
+</body>
+</html>

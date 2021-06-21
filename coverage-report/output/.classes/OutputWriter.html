@@ -1,0 +1,125 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: OutputWriter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">output</a> ]
+</div>
+
+<h1>Coverage Summary for Class: OutputWriter (output)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OutputWriter</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94,1%
+  </span>
+  <span class="absValue">
+    (16/ 17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package output;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.io.BufferedWriter;
+<i>4</i>&nbsp;import java.io.FileWriter;
+<i>5</i>&nbsp;import java.io.IOException;
+<i>6</i>&nbsp;import java.util.ArrayList;
+<i>7</i>&nbsp;import java.util.Map;
+<i>8</i>&nbsp;import java.util.Set;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;//schreiben Output in Datei
+<b class="nc"><i>11</i>&nbsp;public class OutputWriter {</b>
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;	public static void writeToFile(String path, Map&lt;ArrayList&lt;Integer&gt;, Integer&gt; selectedCases, String header, int size) throws IOException {
+<i>14</i>&nbsp;
+<b class="fc"><i>15</i>&nbsp;		BufferedWriter writer = new BufferedWriter(new FileWriter(path));</b>
+<b class="fc"><i>16</i>&nbsp;		String outputToWrite = String.format(&quot;%s%s%s&quot;, getHeaderLine(header), getTableSplitter(size), getRows(selectedCases.entrySet()));</b>
+<b class="fc"><i>17</i>&nbsp;		writer.write(outputToWrite);</b>
+<b class="fc"><i>18</i>&nbsp;		writer.close();</b>
+<b class="fc"><i>19</i>&nbsp;	}</b>
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;	private static String getHeaderLine(String header) {
+<b class="fc"><i>22</i>&nbsp;		return String.format(&quot;%s%s&quot;, header, System.lineSeparator());</b>
+<i>23</i>&nbsp;	}
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;	private static String getTableSplitter(int size) {
+<b class="fc"><i>26</i>&nbsp;		return &quot;| -- &quot;.repeat(Math.max(0, size)) +</b>
+<b class="fc"><i>27</i>&nbsp;				&quot;|&quot; + System.lineSeparator();</b>
+<i>28</i>&nbsp;	}
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;	private static String getRows(Set&lt;Map.Entry&lt;ArrayList&lt;Integer&gt;, Integer&gt;&gt; rows) {
+<b class="fc"><i>31</i>&nbsp;		StringBuilder builder = new StringBuilder();</b>
+<b class="fc"><i>32</i>&nbsp;		for (Map.Entry&lt;ArrayList&lt;Integer&gt;, Integer&gt; row : rows) {</b>
+<i>33</i>&nbsp;
+<b class="fc"><i>34</i>&nbsp;			String singleRow = String.format(&quot;|  %s |  %d |&quot; + System.lineSeparator(), row.getKey().toString().</b>
+<b class="fc"><i>35</i>&nbsp;					replaceAll(&quot;,&quot;, &quot; | &quot;).</b>
+<b class="fc"><i>36</i>&nbsp;					replaceAll(&quot;\\[|]&quot;, &quot;&quot;), row.getValue());</b>
+<i>37</i>&nbsp;
+<b class="fc"><i>38</i>&nbsp;			builder.append(singleRow);</b>
+<b class="fc"><i>39</i>&nbsp;		}</b>
+<b class="fc"><i>40</i>&nbsp;		return builder.toString();</b>
+<i>41</i>&nbsp;	}
+<i>42</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-06-06 08:48</div>
+</div>
+</body>
+</html>

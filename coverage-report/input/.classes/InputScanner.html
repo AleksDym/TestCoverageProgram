@@ -1,0 +1,173 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: InputScanner</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">input</a> ]
+</div>
+
+<h1>Coverage Summary for Class: InputScanner (input)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InputScanner</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    95,2%
+  </span>
+  <span class="absValue">
+    (40/ 42)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package input;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import algorithmen.TruthTable;
+<i>4</i>&nbsp;import java.io.File;
+<i>5</i>&nbsp;import java.io.IOException;
+<i>6</i>&nbsp;import java.nio.charset.StandardCharsets;
+<i>7</i>&nbsp;import java.util.ArrayList;
+<i>8</i>&nbsp;import java.util.Arrays;
+<i>9</i>&nbsp;import java.util.List;
+<i>10</i>&nbsp;import java.util.Scanner;
+<i>11</i>&nbsp;import java.util.stream.Collectors;
+<i>12</i>&nbsp;
+<b class="nc"><i>13</i>&nbsp;public class InputScanner {</b>
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;    //die Datei mit Scanner lesen und neue Tabelle erzeugen
+<i>16</i>&nbsp;    public static TruthTable readTableFromFile(File file) throws IOException {
+<b class="fc"><i>17</i>&nbsp;        Scanner sc =  new Scanner(file, StandardCharsets.UTF_8);;</b>
+<b class="fc"><i>18</i>&nbsp;        TruthTable truthTable = new TruthTable();</b>
+<i>19</i>&nbsp;        try {
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;            int neededNumberOfCells;
+<i>22</i>&nbsp;
+<b class="fc"><i>23</i>&nbsp;            if (sc.hasNextLine()) {</b>
+<b class="fc"><i>24</i>&nbsp;                String header = sc.nextLine();</b>
+<b class="fc"><i>25</i>&nbsp;                checkHeader(header); //save the header</b>
+<i>26</i>&nbsp;
+<b class="fc"><i>27</i>&nbsp;                truthTable.setHeader(header);</b>
+<i>28</i>&nbsp;
+<b class="fc"><i>29</i>&nbsp;                neededNumberOfCells = header.split(&quot;\\|&quot;).length - 1; //calculate amount of cells</b>
+<b class="fc"><i>30</i>&nbsp;                truthTable.setAnzahlVonBedingugen(neededNumberOfCells);</b>
+<i>31</i>&nbsp;
+<b class="fc"><i>32</i>&nbsp;                if (sc.hasNextLine()) {</b>
+<b class="fc"><i>33</i>&nbsp;                    checkLine(sc.nextLine(), neededNumberOfCells); //this is the splitter line</b>
+<i>34</i>&nbsp;                } else {
+<b class="fc"><i>35</i>&nbsp;                    throw new IOException(&quot;Nach dem Splitter gibt es keine Zeilen mehr&quot;);</b>
+<i>36</i>&nbsp;                }
+<b class="fc"><i>37</i>&nbsp;                while (sc.hasNextLine()) { //goo thorugh all the lines</b>
+<b class="fc"><i>38</i>&nbsp;                    String line = sc.nextLine();</b>
+<b class="fc"><i>39</i>&nbsp;                    checkCells(line, neededNumberOfCells);</b>
+<i>40</i>&nbsp;
+<b class="fc"><i>41</i>&nbsp;                    List&lt;String&gt; values = Arrays.asList(line.replace(&quot; &quot;, &quot;&quot;).split(&quot;\\|&quot;));</b>
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;                    //adding the line to the table in map format: values as key in an Array and the condition as a key
+<b class="fc"><i>44</i>&nbsp;                    truthTable.getTruthTable().put(new ArrayList&lt;&gt;(values.subList(1, values.size() - 1) //those are cell values as a key</b>
+<b class="fc"><i>45</i>&nbsp;                     .stream().map(Integer::parseInt).collect(Collectors.toList())),</b>
+<b class="fc"><i>46</i>&nbsp;                     Integer.parseInt(values.get(values.size() - 1)));</b>
+<i>47</i>&nbsp;
+<b class="fc"><i>48</i>&nbsp;                }</b>
+<b class="fc"><i>49</i>&nbsp;            } else {</b>
+<b class="nc"><i>50</i>&nbsp;                throw new IOException(&quot;Die Datei ist leer&quot;);</b>
+<i>51</i>&nbsp;            }
+<i>52</i>&nbsp;        } finally {
+<b class="fc"><i>53</i>&nbsp;                sc.close(); //closing the scanner</b>
+<b class="fc"><i>54</i>&nbsp;        }</b>
+<b class="fc"><i>55</i>&nbsp;        return truthTable;</b>
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    //Tabellenüberschrift ist korrekt formatiert
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    static void checkHeader(String line) throws IOException {
+<b class="fc"><i>61</i>&nbsp;        if (!line.matches(&quot;\\|(\\s*.+\\s*\\|{1})+&quot;)) {</b>
+<b class="fc"><i>62</i>&nbsp;            throw new IOException(String.format(&quot;der Header ist inkorrekt formatiert:  %s&quot;, line));</b>
+<i>63</i>&nbsp;        }
+<b class="fc"><i>64</i>&nbsp;    }</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    //Linie, die Header und Zellen splittet, ist korrekt formatiert
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    static void checkLine(String line, int numberOfNeededCells) throws IllegalArgumentException {
+<b class="fc"><i>69</i>&nbsp;        if (line.matches(&quot;\\|(\\s*--\\s*\\|{1})+&quot;)) {</b>
+<b class="fc"><i>70</i>&nbsp;            int actualCells = line.split(&quot;\\|&quot;).length - 1;</b>
+<b class="fc"><i>71</i>&nbsp;            if (actualCells != numberOfNeededCells) {</b>
+<b class="fc"><i>72</i>&nbsp;                throw new IllegalArgumentException(String.format(&quot;Die Anzahl von Zellen ist nicht korrekt: %s &quot;, line));</b>
+<i>73</i>&nbsp;            }
+<b class="fc"><i>74</i>&nbsp;        } else {</b>
+<b class="fc"><i>75</i>&nbsp;            throw new IllegalArgumentException(String.format(&quot;die Zeile ist inkorrekt formatiert:  %s&quot;, line));</b>
+<i>76</i>&nbsp;        }
+<b class="fc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    // Tabelleneintrag ist korrekt formatiert
+<i>80</i>&nbsp;    static void checkCells(String line, int numberOfNeededCells) throws IllegalArgumentException {
+<b class="fc"><i>81</i>&nbsp;        if (line.matches(&quot;\\|(\\s*[0,1]{1}\\s*\\|{1})+&quot;)) {</b>
+<b class="fc"><i>82</i>&nbsp;            int actualCells = line.split(&quot;\\|&quot;).length - 1;</b>
+<b class="fc"><i>83</i>&nbsp;            if (actualCells != numberOfNeededCells) {</b>
+<b class="fc"><i>84</i>&nbsp;                throw new IllegalArgumentException(String.format(&quot;Die Zeile hat falsche Anzahl von Zellen %s &quot;, line));</b>
+<i>85</i>&nbsp;            }
+<b class="fc"><i>86</i>&nbsp;        } else {</b>
+<b class="fc"><i>87</i>&nbsp;            throw new IllegalArgumentException(String.format(&quot;die Zeile ist inkorrekt formatiert:  %s&quot;, line));</b>
+<i>88</i>&nbsp;        }
+<b class="fc"><i>89</i>&nbsp;    }</b>
+<i>90</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-06-06 08:48</div>
+</div>
+</body>
+</html>
